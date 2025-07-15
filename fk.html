@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลางาน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 20px auto;
+            max-width: 1200px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .user-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .form-container, .approval-container {
+            padding: 30px;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 30px;
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            border: none;
+            border-radius: 25px;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 25px;
+        }
+        
+        .status-pending {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        
+        .status-approved {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .status-rejected {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            border-top: none;
+        }
+        
+        .modal-header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="loginSection" class="container">
+        <div class="login-form">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                <h3 id="formTitle">เข้าสู่ระบบลางาน</h3>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">ชื่อผู้ใช้</label>
+                    <input type="text" class="form-control" id="username" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">รหัสผ่าน</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">ประเภทผู้ใช้</label>
+                    <select class="form-select" id="userType" required>
+                        <option value="">เลือกประเภทผู้ใช้</option>
+                        <option value="employee">พนักงาน</option>
+                        <option value="approver">ผู้อนุมัติ</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">เข้าสู่ระบบ</button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="hidden">
+                <div class="mb-3">
+                    <label class="form-label">ชื่อผู้ใช้</label>
+                    <input type="text" class="form-control" id="regUsername" required>
+                    <div class="form-text">ชื่อผู้ใช้ต้องมีความยาว 4-20 ตัวอักษร</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">ชื่อ-นามสกุล</label>
+                    <input type="text" class="form-control" id="regFullName" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">อีเมล</label>
+                    <input type="email" class="form-control" id="regEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">เบอร์โทรศัพท์</label>
+                    <input type="tel" class="form-control" id="regPhone" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">รหัสผ่าน</label>
+                    <input type="password" class="form-control" id="regPassword" required>
+                    <div class="form-text">รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">ยืนยันรหัสผ่าน</label>
+                    <input type="password" class="form-control" id="regConfirmPassword" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">ประเภทผู้ใช้</label>
+                    <select class="form-select" id="regUserType" required>
+                        <option value="">เลือกประเภทผู้ใช้</option>
+                        <option value="employee">พนักงาน</option>
+                        <option value="approver">ผู้อนุมัติ</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">แผนก</label>
+                    <select class="form-select" id="regDepartment" required>
+                        <option value="">เลือกแผนก</option>
+                        <option value="hr">ฝ่ายบุคคล</option>
+                        <option value="it">ฝ่ายเทคโนโลยีสารสนเทศ</option>
+                        <option value="finance">ฝ่ายการเงิน</option>
+                        <option value="marketing">ฝ่ายการตลาด</option>
+                        <option value="sales">ฝ่ายขาย</option>
+                        <option value="operations">ฝ่ายปฏิบัติการ</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success w-100">สมัครสมาชิก</button>
+            </form>
+            
+            <div class="mt-3 text-center">
+                <button id="toggleForm" class="btn btn-link text-decoration-none">
+                    ยังไม่มีบัญชี? สมัครสมาชิก
+                </button>
+            </div>
+            
+
+        </div>
+    </div>
+
+    <!-- Main System -->
+    <div id="mainSystem" class="container-fluid hidden">
+        <div class="main-container">
+            <div class="header position-relative">
+                <h2><i class="fas fa-calendar-alt me-2"></i>ระบบลางาน</h2>
+                <div class="user-switch">
+                    <button id="logoutBtn" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ
+                    </button>
+                </div>
+                <div class="mt-2">
+                    <span id="currentUserDisplay" class="badge bg-light text-dark fs-6"></span>
+                </div>
+            </div>
+
+            <!-- Employee Section -->
+            <div id="employeeSection" class="form-container hidden">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5><i class="fas fa-plus-circle me-2"></i>ส่งคำขอลางาน</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="leaveForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">วันที่เริ่มลา</label>
+                                            <input type="date" class="form-control" id="startDate" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">วันที่สิ้นสุด</label>
+                                            <input type="date" class="form-control" id="endDate" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">ประเภทการลา</label>
+                                        <select class="form-select" id="leaveType" required>
+                                            <option value="">เลือกประเภทการลา</option>
+                                            <option value="vacation">ลาพักร้อน</option>
+                                            <option value="sick">ลาป่วย</option>
+                                            <option value="personal">ลากิจ</option>
+                                        </select>
+                                    </div>
+                                    <div id="reasonSection" class="mb-3 hidden">
+                                        <label class="form-label">เหตุผลการลา <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="reason" rows="3" placeholder="กรุณาระบุเหตุผลการลา"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-2"></i>ส่งคำขอ
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h6><i class="fas fa-history me-2"></i>สถานะคำขอของฉัน</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="employeeRequests"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approver Section -->
+            <div id="approverSection" class="approval-container hidden">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-tasks me-2"></i>คำขอลางานรอการอนุมัติ</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>ชื่อพนักงาน</th>
+                                        <th>ประเภทการลา</th>
+                                        <th>วันที่ลา</th>
+                                        <th>สถานะ</th>
+                                        <th>การดำเนินการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requestsTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Detail Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-eye me-2"></i>รายละเอียดคำขอลางาน</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalContent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="approveBtn">
+                        <i class="fas fa-check me-2"></i>อนุมัติ
+                    </button>
+                    <button type="button" class="btn btn-danger" id="rejectBtn">
+                        <i class="fas fa-times me-2"></i>ปฏิเสธ
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ระบบความปลอดภัย - ข้อมูลผู้ใช้
+        const defaultUsers = {
+            'user1': { password: 'pass1', type: 'employee', name: 'นายสมชาย ใจดี', email: 'user1@company.com', phone: '081-111-1111', department: 'it' },
+            'user2': { password: 'pass2', type: 'employee', name: 'นางสาวสมหญิง รักงาน', email: 'user2@company.com', phone: '081-222-2222', department: 'hr' },
+            'approver': { password: 'approve123', type: 'approver', name: 'ผู้จัดการฝ่ายบุคคล', email: 'approver@company.com', phone: '081-000-0000', department: 'hr' }
+        };
+        
+        // ตรวจสอบและรีเซ็ตข้อมูลผู้ใช้หากจำเป็น
+        let users = JSON.parse(localStorage.getItem('users') || 'null');
+        if (!users || !users.approver) {
+            users = defaultUsers;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        let currentUser = null;
+        let currentRequestId = null;
+        let isRegisterMode = false;
+
+        // สลับระหว่างฟอร์ม Login และ Register
+        document.getElementById('toggleForm').addEventListener('click', function() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const formTitle = document.getElementById('formTitle');
+            const toggleBtn = document.getElementById('toggleForm');
+            
+            if (!isRegisterMode) {
+                // เปลี่ยนเป็นโหมดสมัครสมาชิก
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                formTitle.textContent = 'สมัครสมาชิก';
+                toggleBtn.textContent = 'มีบัญชีแล้ว? เข้าสู่ระบบ';
+                isRegisterMode = true;
+            } else {
+                // เปลี่ยนเป็นโหมดเข้าสู่ระบบ
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                formTitle.textContent = 'เข้าสู่ระบบลางาน';
+                toggleBtn.textContent = 'ยังไม่มีบัญชี? สมัครสมาชิก';
+                isRegisterMode = false;
+            }
+        });
+
+        // ฟังก์ชันสมัครสมาชิก
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value;
+            const fullName = document.getElementById('regFullName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const userType = document.getElementById('regUserType').value;
+            const department = document.getElementById('regDepartment').value;
+            
+            // ตรวจสอบข้อมูล
+            if (username.length < 4 || username.length > 20) {
+                alert('ชื่อผู้ใช้ต้องมีความยาว 4-20 ตัวอักษร');
+                return;
+            }
+            
+            if (users[username]) {
+                alert('ชื่อผู้ใช้นี้มีอยู่แล้ว กรุณาเลือกชื่อผู้ใช้อื่น');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('รหัสผ่านไม่ตรงกัน');
+                return;
+            }
+            
+            // ตรวจสอบอีเมลซ้ำ
+            const existingUser = Object.values(users).find(user => user.email === email);
+            if (existingUser) {
+                alert('อีเมลนี้ถูกใช้งานแล้ว');
+                return;
+            }
+            
+            // บันทึกข้อมูลผู้ใช้ใหม่
+            users[username] = {
+                password: password,
+                type: userType,
+                name: fullName,
+                email: email,
+                phone: phone,
+                department: department,
+                registeredAt: new Date().toLocaleString('th-TH')
+            };
+            
+            // บันทึกลง localStorage
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('สมัครสมาชิกเรียบร้อยแล้ว! กรุณาเข้าสู่ระบบ');
+            
+            // รีเซ็ตฟอร์มและกลับไปหน้า Login
+            this.reset();
+            document.getElementById('toggleForm').click();
+        });
+
+        // ฟังก์ชันเข้าสู่ระบบ
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            
+            if (users[username] && users[username].password === password && users[username].type === userType) {
+                currentUser = {
+                    username: username,
+                    name: users[username].name,
+                    type: users[username].type,
+                    email: users[username].email,
+                    phone: users[username].phone,
+                    department: users[username].department
+                };
+                
+                // บันทึกสถานะการเข้าสู่ระบบ
+                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                showMainSystem();
+            } else {
+                alert('ชื่อผู้ใช้ รหัสผ่าน หรือประเภทผู้ใช้ไม่ถูกต้อง');
+            }
+        });
+
+        // แสดงระบบหลัก
+        function showMainSystem() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainSystem').classList.remove('hidden');
+            
+            document.getElementById('currentUserDisplay').textContent = 
+                `${currentUser.name} (${currentUser.type === 'employee' ? 'พนักงาน' : 'ผู้อนุมัติ'})`;
+            
+            if (currentUser.type === 'employee') {
+                showEmployeeSection();
+            } else {
+                showApproverSection();
+            }
+        }
+
+        // แสดงส่วนพนักงาน
+        function showEmployeeSection() {
+            document.getElementById('employeeSection').classList.remove('hidden');
+            document.getElementById('approverSection').classList.add('hidden');
+            loadEmployeeRequests();
+        }
+
+        // แสดงส่วนผู้อนุมัติ
+        function showApproverSection() {
+            document.getElementById('employeeSection').classList.add('hidden');
+            document.getElementById('approverSection').classList.remove('hidden');
+            loadAllRequests();
+        }
+
+        // จัดการประเภทการลา
+        document.getElementById('leaveType').addEventListener('change', function() {
+            const reasonSection = document.getElementById('reasonSection');
+            const reasonField = document.getElementById('reason');
+            
+            if (this.value === 'personal') {
+                reasonSection.classList.remove('hidden');
+                reasonField.required = true;
+            } else {
+                reasonSection.classList.add('hidden');
+                reasonField.required = false;
+                reasonField.value = '';
+            }
+        });
+
+        // ส่งคำขอลางาน
+        document.getElementById('leaveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                id: Date.now(),
+                employee: currentUser.username,
+                employeeName: currentUser.name,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                leaveType: document.getElementById('leaveType').value,
+                reason: document.getElementById('reason').value,
+                status: 'pending',
+                submittedAt: new Date().toLocaleString('th-TH')
+            };
+            
+            // บันทึกข้อมูลใน localStorage
+            let requests = JSON.parse(localStorage.getItem('leaveRequests') || '[]');
+            requests.push(formData);
+            localStorage.setItem('leaveRequests', JSON.stringify(requests));
+            
+            // รีเซ็ตฟอร์ม
+            this.reset();
+            document.getElementById('reasonSection').classList.add('hidden');
+            
+            alert('ส่งคำขอลางานเรียบร้อยแล้ว');
+            loadEmployeeRequests();
+        });
+
+        // โหลดคำขอของพนักงาน
+        function loadEmployeeRequests() {
+            const requests = JSON.parse(localStorage.getItem('leaveRequests') || '[]');
+            const employeeRequests = requests.filter(req => req.employee === currentUser.username);
+            
+            const container = document.getElementById('employeeRequests');
+            
+            if (employeeRequests.length === 0) {
+                container.innerHTML = '<p class="text-muted">ยังไม่มีคำขอลางาน</p>';
+                return;
+            }
+            
+            container.innerHTML = employeeRequests.map(req => `
+                <div class="border-bottom pb-2 mb-2">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">${req.submittedAt}</small>
+                        <span class="status-${req.status}">
+                            ${req.status === 'pending' ? 'รอการอนุมัติ' : 
+                              req.status === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ'}
+                        </span>
+                    </div>
+                    <div><strong>${getLeaveTypeName(req.leaveType)}</strong></div>
+                    <div class="text-muted small">${req.startDate} ถึง ${req.endDate}</div>
+                </div>
+            `).join('');
+        }
+
+        // โหลดคำขอทั้งหมดสำหรับผู้อนุมัติ
+        function loadAllRequests() {
+            const requests = JSON.parse(localStorage.getItem('leaveRequests') || '[]');
+            const tableBody = document.getElementById('requestsTable');
+            
+            if (requests.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">ไม่มีคำขอลางาน</td></tr>';
+                return;
+            }
+            
+            tableBody.innerHTML = requests.map((req, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${req.employeeName}</td>
+                    <td>${getLeaveTypeName(req.leaveType)}</td>
+                    <td>${req.startDate} ถึง ${req.endDate}</td>
+                    <td>
+                        <span class="status-${req.status}">
+                            ${req.status === 'pending' ? 'รอการอนุมัติ' : 
+                              req.status === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewRequest(${req.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ดูรายละเอียดคำขอ
+        function viewRequest(requestId) {
+            const requests = JSON.parse(localStorage.getItem('leaveRequests') || '[]');
+            const request = requests.find(req => req.id === requestId);
+            
+            if (!request) return;
+            
+            currentRequestId = requestId;
+            
+            const employeeData = users[request.employee];
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>ข้อมูลพนักงาน</h6>
+                        <p><strong>ชื่อ:</strong> ${request.employeeName}</p>
+                        <p><strong>แผนก:</strong> ${getDepartmentName(employeeData?.department || 'ไม่ระบุ')}</p>
+                        <p><strong>อีเมล:</strong> ${employeeData?.email || 'ไม่ระบุ'}</p>
+                        <p><strong>เบอร์โทร:</strong> ${employeeData?.phone || 'ไม่ระบุ'}</p>
+                        <p><strong>วันที่ส่งคำขอ:</strong> ${request.submittedAt}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>รายละเอียดการลา</h6>
+                        <p><strong>ประเภท:</strong> ${getLeaveTypeName(request.leaveType)}</p>
+                        <p><strong>วันที่:</strong> ${request.startDate} ถึง ${request.endDate}</p>
+                        ${request.reason ? `<p><strong>เหตุผล:</strong> ${request.reason}</p>` : ''}
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h6>สถานะปัจจุบัน</h6>
+                    <span class="badge bg-${request.status === 'pending' ? 'warning' : 
+                                         request.status === 'approved' ? 'success' : 'danger'} fs-6">
+                        ${request.status === 'pending' ? 'รอการอนุมัติ' : 
+                          request.status === 'approved' ? 'อนุมัติแล้ว' : 'ปฏิเสธแล้ว'}
+                    </span>
+                    ${request.processedAt ? `<p class="mt-2 text-muted small">ดำเนินการโดย: ${request.processedBy} เมื่อ ${request.processedAt}</p>` : ''}
+                </div>
+            `;
+            
+            // แสดง/ซ่อนปุ่มตามสถานะ
+            const approveBtn = document.getElementById('approveBtn');
+            const rejectBtn = document.getElementById('rejectBtn');
+            
+            if (request.status === 'pending') {
+                approveBtn.style.display = 'inline-block';
+                rejectBtn.style.display = 'inline-block';
+            } else {
+                approveBtn.style.display = 'none';
+                rejectBtn.style.display = 'none';
+            }
+            
+            new bootstrap.Modal(document.getElementById('requestModal')).show();
+        }
+
+        // อนุมัติคำขอ
+        document.getElementById('approveBtn').addEventListener('click', function() {
+            updateRequestStatus('approved');
+        });
+
+        // ปฏิเสธคำขอ
+        document.getElementById('rejectBtn').addEventListener('click', function() {
+            updateRequestStatus('rejected');
+        });
+
+        // อัปเดตสถานะคำขอ
+        function updateRequestStatus(status) {
+            let requests = JSON.parse(localStorage.getItem('leaveRequests') || '[]');
+            const requestIndex = requests.findIndex(req => req.id === currentRequestId);
+            
+            if (requestIndex !== -1) {
+                requests[requestIndex].status = status;
+                requests[requestIndex].processedAt = new Date().toLocaleString('th-TH');
+                requests[requestIndex].processedBy = currentUser.name;
+                
+                localStorage.setItem('leaveRequests', JSON.stringify(requests));
+                
+                bootstrap.Modal.getInstance(document.getElementById('requestModal')).hide();
+                loadAllRequests();
+                
+                alert(`${status === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ'}คำขอเรียบร้อยแล้ว`);
+            }
+        }
+
+
+
+        // ออกจากระบบ
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+                currentUser = null;
+                sessionStorage.removeItem('currentUser');
+                
+                document.getElementById('mainSystem').classList.add('hidden');
+                document.getElementById('loginSection').classList.remove('hidden');
+                document.getElementById('loginForm').reset();
+            }
+        });
+
+        // ฟังก์ชันช่วย
+        function getLeaveTypeName(type) {
+            const types = {
+                'vacation': 'ลาพักร้อน',
+                'sick': 'ลาป่วย',
+                'personal': 'ลากิจ'
+            };
+            return types[type] || type;
+        }
+
+        function getDepartmentName(dept) {
+            const departments = {
+                'hr': 'ฝ่ายบุคคล',
+                'it': 'ฝ่ายเทคโนโลยีสารสนเทศ',
+                'finance': 'ฝ่ายการเงิน',
+                'marketing': 'ฝ่ายการตลาด',
+                'sales': 'ฝ่ายขาย',
+                'operations': 'ฝ่ายปฏิบัติการ'
+            };
+            return departments[dept] || dept;
+        }
+
+        // ตรวจสอบการเข้าสู่ระบบเมื่อโหลดหน้า
+        window.addEventListener('load', function() {
+            const savedUser = sessionStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainSystem();
+            }
+        });
+
+        // ตั้งค่าวันที่ขั้นต่ำเป็นวันนี้
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+            
+            // อัปเดตวันที่สิ้นสุดเมื่อเลือกวันที่เริ่มต้น
+            document.getElementById('startDate').addEventListener('change', function() {
+                document.getElementById('endDate').min = this.value;
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95f81649e392fdf3',t:'MTc1MjU3MDIxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
