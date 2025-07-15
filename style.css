@@ -1,442 +1,108 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap');
-
-:root {
-    --primary-color: #4CAF50; /* Green */
-    --secondary-color: #2196F3; /* Blue */
-    --accent-color: #FFC107; /* Amber */
-    --background-color: #f4f7f6;
-    --card-background: #ffffff;
-    --text-color: #333;
-    --light-text-color: #666;
-    --border-color: #e0e0e0;
-    --income-color: #28a745; /* Bootstrap Green */
-    --expense-color: #dc3545; /* Bootstrap Red */
-    --balance-color: #007bff; /* Bootstrap Blue */
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Kanit', sans-serif;
-}
-
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top for better scrolling */
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    margin: 20px;
+    box-sizing: border-box;
 }
 
 .container {
-    display: flex;
-    min-height: 100vh;
-}
-
-.sidebar {
-    width: 250px;
-    background-color: var(--card-background);
-    padding: 2rem 1rem;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.logo {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.logo i {
-    font-size: 3rem;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
-}
-
-.logo h1 {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    font-weight: 600;
-}
-
-.nav-menu ul {
-    list-style: none;
-    width: 100%;
-}
-
-.nav-menu ul li {
-    padding: 1rem 1.5rem;
-    margin-bottom: 0.5rem;
+    background-color: #fff;
+    padding: 30px;
     border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    display: flex;
-    align-items: center;
-    color: var(--light-text-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
 }
 
-.nav-menu ul li i {
-    margin-right: 10px;
-    font-size: 1.1rem;
+h1 {
+    color: #333;
+    margin-bottom: 20px;
 }
 
-.nav-menu ul li:hover,
-.nav-menu ul li.active {
-    background-color: var(--primary-color);
+.status-section, .button-section, .notifications, .attendance-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.status-section p {
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+.status-section #currentStatus {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.button-section button {
+    background-color: #007bff;
     color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
 }
 
-.content {
-    flex-grow: 1;
-    padding: 2rem;
+.button-section button:hover {
+    background-color: #0056b3;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-header h2 {
-    font-size: 2rem;
-    color: var(--primary-color);
-    font-weight: 700;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    color: var(--light-text-color);
-}
-
-.user-info i {
-    font-size: 1.5rem;
-    margin-right: 0.5rem;
-}
-
-.page {
+.notifications {
+    color: #d8000c;
+    background-color: #ffbaba;
+    border-color: #d8000c;
+    font-weight: bold;
     display: none; /* Hidden by default */
 }
 
-.page.active-page {
-    display: block; /* Show active page */
-}
-
-/* Cards */
-.summary-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.card {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    text-align: center;
-}
-
-.card h3 {
-    font-size: 1.2rem;
-    color: var(--light-text-color);
-    margin-bottom: 0.8rem;
-}
-
-.card p {
-    font-size: 2.2rem;
-    font-weight: 700;
-}
-
-.income-card p { color: var(--income-color); }
-.expense-card p { color: var(--expense-color); }
-.balance-card p { color: var(--balance-color); }
-
-/* Buttons */
-.btn-primary, .btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #43a047;
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background-color: #e0e0e0;
-    color: var(--text-color);
-}
-
-.btn-secondary:hover {
-    background-color: #d0d0d0;
-    transform: translateY(-2px);
-}
-
-/* Forms */
-.transaction-form, .goal-form {
-    background-color: var(--card-background);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    align-items: end;
-}
-
-.transaction-form label, .goal-form label {
-    font-weight: 600;
-    color: var(--light-text-color);
-    margin-bottom: 0.3rem;
+.notifications.show {
     display: block;
 }
 
-.transaction-form input,
-.transaction-form select,
-.goal-form input,
-.goal-form select {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 1rem;
+.notifications.warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
 }
 
-.transaction-form button, .goal-form button {
-    grid-column: span 2; /* Make button span full width */
-    margin-top: 1rem;
-}
-
-/* Lists */
-.recent-transactions-section,
-.transaction-list-container,
-.goals-list-container {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-}
-
-.recent-transactions-section h3,
-.transaction-list-container h3,
-.goals-list-container h3 {
-    margin-bottom: 1rem;
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
-#recent-transactions-list,
-#transaction-history-list,
-#goals-list {
+.attendance-section ul {
     list-style: none;
     padding: 0;
 }
 
-#recent-transactions-list li,
-#transaction-history-list li,
-#goals-list li {
+.attendance-section li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 0;
-    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.95em;
 }
 
-#recent-transactions-list li:last-child,
-#transaction-history-list li:last-child,
-#goals-list li:last-child {
-    border-bottom: none;
+.attendance-section li.late {
+    background-color: #ffe6e6;
+    border-color: #ff9999;
 }
 
-.type-income {
-    color: var(--income-color);
-    font-weight: 600;
+.attendance-section li.absent {
+    background-color: #ffe6cc;
+    border-color: #ffcc99;
 }
 
-.type-expense {
-    color: var(--expense-color);
-    font-weight: 600;
-}
-
-.date {
-    font-size: 0.9rem;
-    color: var(--light-text-color);
-}
-
-/* Goal specific styling */
-.goal-item {
-    padding: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    background-color: #f9f9f9;
-}
-
-.goal-item.no-goal {
-    text-align: center;
-    color: var(--light-text-color);
-    font-style: italic;
-    padding: 2rem;
-}
-
-.goal-item h4 {
-    margin-bottom: 0.5rem;
-    color: var(--primary-color);
-}
-
-.goal-item .progress-bar {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    height: 10px;
-    overflow: hidden;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.goal-item .progress {
-    height: 100%;
-    background-color: var(--secondary-color);
-    border-radius: 5px;
-    transition: width 0.5s ease-in-out;
-}
-
-.goal-item .goal-details {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-    color: var(--light-text-color);
-}
-
-.goal-item .goal-details strong {
-    color: var(--text-color);
-}
-
-.goal-item .goal-actions {
-    margin-top: 1rem;
-    text-align: right;
-}
-
-.goal-item .goal-actions button {
-    margin-left: 0.5rem;
-}
-
-/* AI Insights */
-.ai-analysis-area {
-    background-color: var(--card-background);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    text-align: center;
-}
-
-.ai-analysis-area p {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    color: var(--light-text-color);
-}
-
-.ai-results {
-    margin-top: 2rem;
-    text-align: left;
-    background-color: #f0f8f0; /* Light green background for results */
-    border: 1px solid var(--primary-color);
-    border-radius: 8px;
-    padding: 1.5rem;
-    min-height: 150px;
-    overflow-y: auto;
-    font-size: 1rem;
-    color: var(--text-color);
-    white-space: pre-wrap; /* Preserve formatting from AI */
-}
-
-.ai-results .placeholder-text {
-    text-align: center;
-    color: var(--light-text-color);
-    font-style: italic;
-}
-
-/* Utility classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-1 { margin-top: 1rem; }
-.mt-2 { margin-top: 2rem; }
-.mb-1 { margin-bottom: 1rem; }
-.mb-2 { margin-bottom: 2rem; }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        padding: 1rem;
-        flex-direction: row;
-        justify-content: space-around;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .sidebar .logo {
-        display: none; /* Hide logo on small screens */
-    }
-
-    .nav-menu ul {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .nav-menu ul li {
-        padding: 0.8rem;
-        margin: 0 0.2rem;
-        font-size: 0.9rem;
-    }
-
-    .nav-menu ul li i {
-        margin-right: 5px;
-    }
-
-    .content {
-        padding: 1rem;
-    }
-
-    .summary-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .transaction-form, .goal-form {
-        grid-template-columns: 1fr;
-    }
-
-    .transaction-form button, .goal-form button {
-        grid-column: span 1;
-    }
-
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .user-info {
-        margin-top: 0.5rem;
-    }
+.attendance-section li span {
+    font-weight: bold;
 }
